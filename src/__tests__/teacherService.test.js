@@ -146,10 +146,10 @@ describe('Teacher Service', () => {
       teacherRepository.findActiveStudents.mockResolvedValue([
         { email: 'student1@example.com', Suspension: null }
       ]);
-
-      const result = await teacherService.getNotificationRecipients('nonexistent@example.com', notification);
       
-      expect(result).toEqual(['student1@example.com']);
+      await expect(teacherService.getNotificationRecipients('nonexistent@example.com', notification))
+      .rejects
+      .toThrow(new AppError('Teacher not found', 404));
     });
 
     it('should handle case with no mentioned students', async () => {

@@ -30,6 +30,7 @@ const getNotificationRecipients = async (teacherEmail, notification) => {
 
   // Find teacher and their registered students
   const teacher = await teacherRepository.findTeacherWithStudents(teacherEmail);
+  if (!teacher) throw new AppError("Teacher not found", 404);
   const registeredStudents = teacher ? teacher.Students.map(s => s.email) : [];
 
   // Extract mentioned students from the notification text
