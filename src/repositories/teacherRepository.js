@@ -1,57 +1,55 @@
 const { Teacher, Student, Registration, Suspension } = require("../models");
 
-const registerStudents = async (teacherEmail, studentEmails) => {
-  const [teacher] = await Teacher.findOrCreate({ where: { email: teacherEmail } });
+const findOrCreateTeacher = async (email) => {
+  return await Teacher.findOrCreate({ where: { email } });
+};
 
-  const students = await Promise.all(
-    studentEmails.map(email => Student.findOrCreate({ where: { email } }))
+const findOrCreateStudents = async (emails) => {
+  return await Promise.all(
+    emails.map(email => Student.findOrCreate({ where: { email } }))
   );
-
-  await teacher.addStudents(students.map(([student]) => student));
 };
 
-const getCommonStudents = async (teacherEmails) => {
-  const teachers = await Teacher.findAll({
-    where: { email: teacherEmails },
+const associateStudentsWithTeacher = async (teacher, students) => {
+  return await teacher.addStudents(students.map(([student]) => student));
+};
+
+const findTeachersByEmails = async (emails) => {
+  return await Teacher.findAll({
+    where: { email: emails },
     include: { model: Student, through: { attributes: [] } },
   });
-
-  if (teachers.length === 0) return [];
-
-  const studentLists = teachers.map(t => t.Students.map(s => s.email));
-  return studentLists.reduce((a, b) => a.filter(email => b.includes(email)));
 };
 
-const suspendStudent = async (studentEmail) => {
-  const student = await Student.findOne({ where: { email: studentEmail } });
-  if (!student) throw new Error("Student not found");
-
-  await Suspension.findOrCreate({ where: { studentId: student.id } });
+const findStudentByEmail = async (email) => {
+  return await Student.findOne({ where: { email } });
 };
 
-const getNotificationRecipients = async (teacherEmail, notification) => {
-  const teacher = await Teacher.findOne({
-    where: { email: teacherEmail },
+const createSuspension = async (studentId) => {
+  return await Suspension.findOrCreate({ where: { studentId } });
+};
+
+const findTeacherWithStudents = async (email) => {
+  return await Teacher.findOne({
+    where: { email },
     include: { model: Student, through: { attributes: [] } },
   });
+};
 
-  //find mentioned email
-  const mentionedEmails = (notification.match(/@([\w.-]+@[\w.-]+)/g) || []).map(email => email.slice(1));
-
-  const registeredStudents = teacher ? teacher.Students.map(s => s.email) : [];
-  const allRecipients = [...new Set([...registeredStudents, ...mentionedEmails])];
-
-  const activeStudents = await Student.findAll({
-    where: { email: allRecipients },
+const findActiveStudents = async (emails) => {
+  return await Student.findAll({
+    where: { email: emails },
     include: { model: Suspension, required: false },
   });
-
-  return activeStudents.filter(s => !s.Suspension).map(s => s.email);
 };
 
 module.exports = {
-    registerStudents,
-    getCommonStudents,
-    suspendStudent,
-    getNotificationRecipients
-}
+  findOrCreateTeacher,
+  findOrCreateStudents,
+  associateStudentsWithTeacher,
+  findTeachersByEmails,
+  findStudentByEmail,
+  createSuspension,
+  findTeacherWithStudents,
+  findActiveStudents,
+};
