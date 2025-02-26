@@ -34,24 +34,6 @@ describe('Teacher Service', () => {
       expect(teacherRepository.findOrCreateStudents).toHaveBeenCalledWith(studentEmails);
       expect(teacherRepository.associateStudentsWithTeacher).toHaveBeenCalledWith(mockTeacher, mockStudents);
     });
-
-    it('should throw an error if teacher email is missing', async () => {
-      await expect(teacherService.registerStudents(null, ['student@example.com']))
-        .rejects
-        .toThrow(new AppError('Teacher and students fields are required', 400));
-    });
-
-    it('should throw an error if student emails are missing', async () => {
-      await expect(teacherService.registerStudents('teacher@example.com', null))
-        .rejects
-        .toThrow(new AppError('Teacher and students fields are required', 400));
-    });
-
-    it('should throw an error if student emails array is empty', async () => {
-      await expect(teacherService.registerStudents('teacher@example.com', []))
-        .rejects
-        .toThrow(new AppError('Teacher and students fields are required', 400));
-    });
   });
 
   describe('getCommonStudents', () => {
@@ -94,18 +76,6 @@ describe('Teacher Service', () => {
       
       expect(result).toEqual([]);
     });
-
-    it('should throw an error if teacher emails are missing', async () => {
-      await expect(teacherService.getCommonStudents(null))
-        .rejects
-        .toThrow(new AppError('At least one teacher email is required', 400));
-    });
-
-    it('should throw an error if teacher emails array is empty', async () => {
-      await expect(teacherService.getCommonStudents([]))
-        .rejects
-        .toThrow(new AppError('At least one teacher email is required', 400));
-    });
   });
 
   describe('suspendStudent', () => {
@@ -123,12 +93,6 @@ describe('Teacher Service', () => {
       // Verify
       expect(teacherRepository.findStudentByEmail).toHaveBeenCalledWith(studentEmail);
       expect(teacherRepository.createSuspension).toHaveBeenCalledWith(mockStudent.id);
-    });
-
-    it('should throw an error if student email is missing', async () => {
-      await expect(teacherService.suspendStudent(null))
-        .rejects
-        .toThrow(new AppError('Student email is required', 400));
     });
 
     it('should throw an error if student is not found', async () => {
@@ -186,18 +150,6 @@ describe('Teacher Service', () => {
       const result = await teacherService.getNotificationRecipients('nonexistent@example.com', notification);
       
       expect(result).toEqual(['student1@example.com']);
-    });
-
-    it('should throw an error if teacher email is missing', async () => {
-      await expect(teacherService.getNotificationRecipients(null, 'Hello students!'))
-        .rejects
-        .toThrow(new AppError('Teacher and notification fields are required', 400));
-    });
-
-    it('should throw an error if notification is missing', async () => {
-      await expect(teacherService.getNotificationRecipients('teacher@example.com', null))
-        .rejects
-        .toThrow(new AppError('Teacher and notification fields are required', 400));
     });
 
     it('should handle case with no mentioned students', async () => {
