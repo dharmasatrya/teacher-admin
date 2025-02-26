@@ -2,9 +2,6 @@ const teacherRepository = require("../repositories/teacherRepository");
 const AppError = require("../utils/AppError");
 
 const registerStudents = async (teacherEmail, studentEmails) => {
-  if (!teacherEmail || !studentEmails || studentEmails.length === 0) {
-    throw new AppError("Teacher and students fields are required", 400);
-  }
 
   const [teacher] = await teacherRepository.findOrCreateTeacher(teacherEmail);
   const students = await teacherRepository.findOrCreateStudents(studentEmails);
@@ -13,9 +10,6 @@ const registerStudents = async (teacherEmail, studentEmails) => {
 };
 
 const getCommonStudents = async (teacherEmails) => {
-  if (!teacherEmails || teacherEmails.length === 0) {
-    throw new AppError("At least one teacher email is required", 400);
-  }
 
   const teachers = await teacherRepository.findTeachersByEmails(teacherEmails);
   if (teachers.length === 0) return [];
@@ -25,9 +19,6 @@ const getCommonStudents = async (teacherEmails) => {
 };
 
 const suspendStudent = async (studentEmail) => {
-  if (!studentEmail) {
-    throw new AppError("Student email is required", 400);
-  }
 
   const student = await teacherRepository.findStudentByEmail(studentEmail);
   if (!student) throw new AppError("Student not found", 404);
@@ -36,9 +27,6 @@ const suspendStudent = async (studentEmail) => {
 };
 
 const getNotificationRecipients = async (teacherEmail, notification) => {
-  if (!teacherEmail || !notification) {
-    throw new AppError("Teacher and notification fields are required", 400);
-  }
 
   // Find teacher and their registered students
   const teacher = await teacherRepository.findTeacherWithStudents(teacherEmail);
