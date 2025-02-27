@@ -54,7 +54,7 @@ Here are the available API endpoints:
 | POST   | `/api/suspend` | Suspend a student |
 | POST   | `/api/retrievefornotifications` | Retrieve students eligible for notifications |
 
-## 8. Running Tests (if applicable)
+## 8. Running Tests
 ```sh
 npm test
 ```
