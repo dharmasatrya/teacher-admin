@@ -4,7 +4,6 @@
 Ensure you have the following installed on your system:
 - **Node.js** (v14+ recommended)
 - **MySQL** (Ensure the MySQL server is running)
-- **npm** (Comes with Node.js)
 
 ## 1. Clone the Repository
 ```sh
