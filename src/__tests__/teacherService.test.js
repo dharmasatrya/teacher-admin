@@ -12,27 +12,29 @@ describe('Teacher Service', () => {
   });
 
   describe('registerStudents', () => {
-    it('should register students with a teacher', async () => {
-      // Setup
-      const teacherEmail = 'teacher@example.com';
-      const studentEmails = ['student1@example.com', 'student2@example.com'];
-      const mockTeacher = { id: 1, email: teacherEmail };
-      const mockStudents = [
-        [{ id: 1, email: studentEmails[0] }, true],
-        [{ id: 2, email: studentEmails[1] }, true]
-      ];
-
-      teacherRepository.findOrCreateTeacher.mockResolvedValue([mockTeacher, true]);
-      teacherRepository.findOrCreateStudents.mockResolvedValue(mockStudents);
-      teacherRepository.associateStudentsWithTeacher.mockResolvedValue(true);
-
-      // Execute
-      await teacherService.registerStudents(teacherEmail, studentEmails);
-
-      // Verify
-      expect(teacherRepository.findOrCreateTeacher).toHaveBeenCalledWith(teacherEmail);
-      expect(teacherRepository.findOrCreateStudents).toHaveBeenCalledWith(studentEmails);
-      expect(teacherRepository.associateStudentsWithTeacher).toHaveBeenCalledWith(mockTeacher, mockStudents);
+    describe('registerStudents', () => {
+      it('should register students with a teacher', async () => {
+        // Setup
+        const teacherEmail = 'teacher@example.com';
+        const studentEmails = ['student1@example.com', 'student2@example.com'];
+        const mockTeacher = { id: 1, email: teacherEmail };
+        const mockStudents = [
+          [{ id: 1, email: studentEmails[0] }, true],
+          [{ id: 2, email: studentEmails[1] }, true]
+        ];
+  
+        teacherRepository.findOrCreateTeacher.mockResolvedValue([mockTeacher, true]);
+        teacherRepository.findOrCreateStudents.mockResolvedValue(mockStudents);
+        teacherRepository.associateStudentsWithTeacher.mockResolvedValue(true);
+  
+        // Execute
+        await teacherService.registerStudents(teacherEmail, studentEmails);
+  
+        // Verify
+        expect(teacherRepository.findOrCreateTeacher).toHaveBeenCalledWith(teacherEmail);
+        expect(teacherRepository.findOrCreateStudents).toHaveBeenCalledWith(studentEmails);
+        expect(teacherRepository.associateStudentsWithTeacher).toHaveBeenCalledWith(mockTeacher, mockStudents);
+      });
     });
   });
 
